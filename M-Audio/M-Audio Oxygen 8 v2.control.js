@@ -9,10 +9,9 @@ host.defineController("M-Audio",
 host.defineMidiPorts(1, 0);
 //linux name for auto-detection : "USB Oxygen 8 v2 MIDI 1"
 host.addDeviceNameBasedDiscoveryPair(["USB Oxygen 8 v2 MIDI 1"],[]);
-//Windows name for auto-detection
-//host.addDeviceNameBasedDiscoveryPair(["USB Oxygen 8 v2 MIDI 1"],[]);
-//OSX name for auto-detection
-//host.addDeviceNameBasedDiscoveryPair(["USB Oxygen 8 v2 MIDI 1"],[]);
+//Windows name for auto-detection : "USB Oxygen 8 v2"
+//OSX name for auto-detection should be also : "USB Oxygen 8 v2"
+host.addDeviceNameBasedDiscoveryPair(["USB Oxygen 8 v2"],[]);
 
 //Possible names are :
 //Oxygen 8 v2
