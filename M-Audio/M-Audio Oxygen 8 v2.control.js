@@ -1,15 +1,31 @@
+//Author : Paul MARTIN
+//https://github.com/luapmartin/bitwig-M-Audio-Oxygen-8-v2
+
 loadAPI(1);
 host.defineController("M-Audio",
                       "Oxygen 8 v2",
-                      "1.0",
+                      "1.1",
                       "69ff52b0-e25b-11e5-a837-0800200c9a66");
 host.defineMidiPorts(1, 0);
+//linux name for auto-detection : "USB Oxygen 8 v2 MIDI 1"
+host.addDeviceNameBasedDiscoveryPair(["USB Oxygen 8 v2 MIDI 1"],[]);
+//Windows name for auto-detection
+//host.addDeviceNameBasedDiscoveryPair(["USB Oxygen 8 v2 MIDI 1"],[]);
+//OSX name for auto-detection
+//host.addDeviceNameBasedDiscoveryPair(["USB Oxygen 8 v2 MIDI 1"],[]);
+
+//Possible names are :
+//Oxygen 8 v2
+//USB Oxygen 8 v2 MIDI 1
+//USB-Audio - USB Oxygen 8 v2
+//M-Audio USB Oxygen 8 v2
+//Midiman Oxygen 8 v2
 
 //CONSTANTS :
 //Values from the M-Audio Oxygen 8 v2
 //ROW_1_KNOBS 71, 74, 84, 7
 //ROW_2_KNOBS 91, 93, 5, 10
-//TRANSPORT 20,21,22,23,24,25
+//TRANSPORTS 20,21,22,23,24,25
 
 var BUTTONS_CC = {
   LOOP: 20,
@@ -43,8 +59,8 @@ var HIGHEST_CC = 70;
 
 function init() {
   host.getMidiInPort(0).setMidiCallback(onMidi);
-  host.getMidiInPort(0).createNoteInput("Oxygen 8 v2");
-
+  host.getMidiInPort(0).createNoteInput("Keyboard");
+  
   transport = host.createTransport();
   cursorDevice = host.createCursorDeviceSection(8);
   cursorTrack = host.createCursorTrackSection(0, 0);
@@ -55,7 +71,7 @@ function init() {
     p.setIndication(true);
   }
 
-  // Make the rest freely mappable
+  //Make the rest freely mappable
   userControls = host.createUserControlsSection(HIGHEST_CC - LOWEST_CC + 1 - 8);
   for (var i = LOWEST_CC; i < HIGHEST_CC; i++) {
     if (!isInDeviceParametersRange(i)) {
@@ -68,7 +84,7 @@ function init() {
 
 function onMidi(status, data1, data2) {
   if (isChannelController(status)) {
-    // Handle 8 macro-switches
+    //Handle 8 macro-switches
     if (isInDeviceParametersRange(data1)) {
       switch (data1) {
         case KNOBS.ROW_1_KNOB_1:
@@ -98,7 +114,7 @@ function onMidi(status, data1, data2) {
       }
       primaryInstrument.getMacro(index).getAmount().set(data2, 128);
     }
-    // Handle transport-buttons
+    //Handle transport-buttons
     else if ((data1 >= DEVICE_START_CC && data1 <= DEVICE_END_CC) && data2 > 0) {
       switch (data1) {
         case BUTTONS_CC.LOOP:
@@ -122,7 +138,7 @@ function onMidi(status, data1, data2) {
           break;
       }
     } else {
-      // Handle remaining CCs
+      //Handle remaining CCs
       if (data1 >= LOWEST_CC && data1 <= HIGHEST_CC) {
         var index = data1 - LOWEST_CC;
         userControls.getControl(index).set(data2, 128);
